@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HireAI </title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--s1:#161921;--s2:#1e2330;--s3:#252c3d;
+  --bd:#2a3150;--bd2:#3a4470;
+  --accent:#4f8ef7;--accent2:#7c6af5;
+  --ok:#3dd68c;--warn:#f5a623;--danger:#f74f6a;
+  --t1:#e8ecf4;--t2:#8a9bc4;--t3:#4d5d85;
+  --font:'DM Sans',sans-serif;--mono:'Space Mono',monospace;
+  --r:10px;--r2:14px;
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font)}
+a{color:var(--accent);text-decoration:none}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-rows:56px 1fr;grid-template-columns:270px 1fr 290px;height:100vh;overflow:hidden}
+.panel{overflow-y:auto;padding:20px 16px}
+.panel::-webkit-scrollbar{width:3px}
+.panel::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.ptitle{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
+
+/* ── HEADER ── */
+header{grid-column:1/-1;background:var(--s1);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;padding:0 20px;gap:16px;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-name{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.logo-sub{font-size:10px;color:var(--t3);font-family:var(--mono)}
+.phase-track{flex:1;display:flex;align-items:center;justify-content:center;gap:6px}
+.ph{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3);font-family:var(--mono)}
+.ph.done{color:var(--ok)}.ph.active{color:var(--accent)}
+.ph-dot{width:8px;height:8px;border-radius:50%;background:var(--bd2);flex-shrink:0}
+.ph.done .ph-dot{background:var(--ok)}
+.ph.active .ph-dot{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.ph-line{width:30px;height:1px;background:var(--bd)}
+.ph-line.done{background:var(--ok)}
+.live-pill{background:var(--s2);border:1px solid var(--bd);border-radius:20px;
+  padding:4px 12px;font-size:11px;color:var(--t2);font-family:var(--mono);
+  display:flex;align-items:center;gap:6px;flex-shrink:0}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ── LEFT PANEL ── */
+.left-panel{background:var(--s1);border-right:1px solid var(--bd)}
+.card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);padding:16px;margin-bottom:14px}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4f8ef730,#7c6af530);
+  border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:600;color:var(--accent);margin:0 auto 10px}
+.cname{font-size:15px;font-weight:600;text-align:center;margin-bottom:2px}
+.crole{font-size:11px;color:var(--t2);text-align:center;font-family:var(--mono)}
+.div{height:1px;background:var(--bd);margin:12px 0}
+.irow{display:flex;justify-content:space-between;margin-bottom:7px;font-size:12px}
+.ilabel{color:var(--t3)}.ival{color:var(--t1);font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.tag{background:var(--s3);border:1px solid var(--bd);border-radius:6px;
+  padding:2px 8px;font-size:11px;color:var(--t2);font-family:var(--mono)}
+.tag.hi{border-color:var(--accent);color:var(--accent);background:#4f8ef712}
+.prog-wrap{height:5px;background:var(--bd);border-radius:3px;overflow:hidden;margin:6px 0}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .5s ease}
+.prog-nums{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);font-family:var(--mono)}
+.tl{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:10px;align-items:flex-start;padding:4px 0}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-dot.done{background:var(--ok)}.tl-dot.active{background:var(--accent);animation:pulse 2s infinite}.tl-dot.pend{background:var(--bd2)}
+.tl-line{width:1px;background:var(--bd);height:10px;margin:0 3.5px}
+.tl-t{font-size:12px;font-weight:500;color:var(--t1)}.tl-s{font-size:11px;color:var(--t3);font-family:var(--mono)}
+.tl-item.active-row .tl-t{color:var(--accent)}.tl-item.active-row .tl-s{color:var(--accent)}
+
+/* ── REGISTRATION ── */
+#regPanel{padding:40px 24px}
+#regPanel h2{font-size:22px;font-weight:600;margin-bottom:6px}
+#regPanel p{font-size:14px;color:var(--t2);margin-bottom:28px;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:var(--t3);margin-bottom:6px;font-family:var(--mono)}
+.field input,.field select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);
+  padding:10px 14px;color:var(--t1);font-family:var(--font);font-size:14px;outline:none;transition:border .2s}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.field select option{background:var(--s2)}
+.btn-start{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;border-radius:var(--r);color:white;font-family:var(--font);font-size:15px;font-weight:600;
+  cursor:pointer;transition:opacity .2s;margin-top:8px}
+.btn-start:hover{opacity:.9}.btn-start:active{opacity:.75}
+.err{color:var(--danger);font-size:13px;margin-top:8px;display:none}
+.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ── CHAT ── */
+.chat-col{display:flex;flex-direction:column;background:var(--bg);min-height:0;overflow:hidden}
+.chat-area{flex:1;min-height:0;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:14px}
+.chat-area::-webkit-scrollbar{width:3px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.msg{max-width:78%;display:flex;gap:10px}
+.msg.ai{align-self:flex-start}.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.mavatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.msg.ai .mavatar{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.msg.user .mavatar{background:var(--s3);border:1px solid var(--bd);color:var(--t2)}
+.mbubble{padding:11px 15px;border-radius:var(--r2);font-size:14px;line-height:1.65}
+.msg.ai .mbubble{background:var(--s1);border:1px solid var(--bd);border-top-left-radius:4px;color:var(--t1)}
+.msg.user .mbubble{background:#4f8ef718;border:1px solid #4f8ef730;border-top-right-radius:4px;color:var(--t1)}
+.mbubble strong{color:var(--accent);font-weight:600}
+.mbubble code{background:var(--s3);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:12px;color:#e2a96f}
+.msg.ai .mbubble strong{color:var(--accent)}
+.question-label{display:inline-block;background:#4f8ef720;border:1px solid #4f8ef750;border-radius:5px;padding:1px 8px;font-size:11px;font-family:var(--mono);color:var(--accent);margin-bottom:7px;letter-spacing:.5px}
+.mtime{font-size:10px;color:var(--t3);font-family:var(--mono);padding:3px 4px}
+.msg.user .mtime{text-align:right}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg{animation:fadeUp .25s ease}
+.thinking{display:none;align-self:flex-start;align-items:center;gap:10px}
+.thinking.show{display:flex}
+.tdots{display:flex;gap:4px;padding:11px 15px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r2);border-top-left-radius:4px}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--t3)}
+.tdot:nth-child(1){animation:bounce 1.2s .0s infinite}
+.tdot:nth-child(2){animation:bounce 1.2s .2s infinite}
+.tdot:nth-child(3){animation:bounce 1.2s .4s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}45%{transform:translateY(-5px)}}
+.chat-footer{padding:14px 28px;background:var(--s1);border-top:1px solid var(--bd)}
+.input-wrap{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);padding:8px 10px;transition:border .2s}
+.input-wrap:focus-within{border-color:var(--accent)}
+#chatInput{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:var(--font);font-size:14px;resize:none;line-height:1.5;max-height:100px}
+#chatInput::placeholder{color:var(--t3)}
+.send-btn{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.send-btn:hover{opacity:.9}.send-btn:active{opacity:.7}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
+.ended-banner{background:#f74f6a18;border:1px solid #f74f6a40;border-radius:var(--r);
+  padding:10px 16px;font-size:13px;color:var(--danger);text-align:center;margin:0 28px 14px}
+
+/* ── RIGHT PANEL ── */
+.right-panel{background:var(--s1);border-left:1px solid var(--bd)}
+.sent-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.live-badge{background:#3dd68c15;border:1px solid #3dd68c40;border-radius:20px;padding:3px 10px;font-size:10px;color:var(--ok);font-family:var(--mono)}
+.ring-wrap{width:96px;height:96px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center}
+.ring-wrap svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring-inner{position:relative;text-align:center}
+.ring-num{font-size:22px;font-weight:600;transition:color .5s}
+.ring-label{font-size:10px;color:var(--t3);font-family:var(--mono)}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.mc{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px}
+.mc-label{font-size:10px;color:var(--t3);font-family:var(--mono);margin-bottom:3px}
+.mc-val{font-size:15px;font-weight:600;transition:color .4s}
+.bar-block{margin-bottom:14px}
+.brow{margin-bottom:10px}
+.bheader{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px}
+.blabel{color:var(--t2)}.bval{color:var(--t1);font-family:var(--mono);font-size:11px}
+.btrack{height:4px;background:var(--bd);border-radius:2px;overflow:hidden}
+.bfill{height:100%;border-radius:2px;transition:width .6s ease}
+
+/* ── RESTORE NOTICE ── */
+.restore-notice{background:#4f8ef718;border:1px solid #4f8ef730;border-radius:var(--r);
+  padding:10px 16px;font-size:13px;color:var(--accent);text-align:center;margin-bottom:12px;display:none}
+.restore-notice.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🤖</div>
+      <div>
+        <div class="logo-name">HireAI</div>
+        <div class="logo-sub">gemini-2.5-flash · supabase</div>
+      </div>
+    </div>
+
+    <div class="phase-track" id="phaseTrack">
+      <div class="ph" id="ph-reg"><div class="ph-dot"></div>Register</div>
+      <div class="ph-line" id="pl-1"></div>
+      <div class="ph" id="ph-gather"><div class="ph-dot"></div>Background</div>
+      <div class="ph-line" id="pl-2"></div>
+      <div class="ph" id="ph-tech"><div class="ph-dot"></div>Technical</div>
+      <div class="ph-line" id="pl-3"></div>
+      <div class="ph" id="ph-end"><div class="ph-dot"></div>Complete</div>
+    </div>
+
+    <div class="live-pill">
+      <div class="live-dot pulse" id="liveStatus"></div>
+      <span id="liveLabel">Ready</span>
+    </div>
+  </header>
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="panel left-panel" id="leftPanel">
+
+    <!-- Registration form (shown before interview starts) -->
+    <div id="regPanel">
+      <h2>Start Interview</h2>
+      <p>Register below to begin your AI-powered technical screening. Your progress is saved — you can safely refresh this page.</p>
+      <div class="reg-grid">
+        <div class="field"><label>Full Name</label><input id="regName" placeholder="Ankush Wadhwa" /></div>
+        <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="you@example.com" /></div>
+      </div>
+      <div class="field">
+        <label>Desired Role</label>
+        <select id="regRole">
+          <option>Software Engineer</option>
+          <option>Data Scientist</option>
+          <option>Data Analyst</option>
+          <option>Backend Engineer</option>
+          <option>ML Engineer</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Interview Language</label>
+        <select id="regLang">
+          <option>English</option>
+          <option>Hindi</option>
+          <option>Spanish</option>
+          <option>French</option>
+          <option>German</option>
+          <option>Mandarin</option>
+        </select>
+      </div>
+      <button class="btn-start" onclick="startInterview()">Begin Interview →</button>
+      <div class="err" id="regErr">Please fill in all fields.</div>
+    </div>
+
+    <!-- Candidate info card (shown after start) -->
+    <div id="candPanel" style="display:none">
+      <div class="ptitle">Candidate</div>
+      <div class="card">
+        <div class="avatar" id="candInitials">AW</div>
+        <div class="cname" id="candName">—</div>
+        <div class="crole" id="candRole">—</div>
+        <div class="div"></div>
+        <div class="irow"><span class="ilabel">Stage</span><span class="ival" id="stageLabel">—</span></div>
+        <div class="irow"><span class="ilabel">Language</span><span class="ival" id="langLabel">English</span></div>
+        <div class="div"></div>
+        <div class="ptitle" style="margin-bottom:8px">Tech Tags</div>
+        <div class="tags" id="techTags"><span class="tag">Not yet gathered</span></div>
+      </div>
+
+      <div class="ptitle">Progress</div>
+      <div class="card">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:6px">Questions answered</div>
+        <div class="prog-wrap"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div class="prog-nums"><span id="progNow">0 / 5</span><span id="progPct">0%</span></div>
+      </div>
+
+      <div class="ptitle">Interview Flow</div>
+      <div class="tl" id="timeline">
+        <div class="tl-item" id="tl-reg"><div class="tl-dot pend" id="tld-reg"></div><div><div class="tl-t">Registration</div><div class="tl-s">Candidate details</div></div></div>
+        <div class="tl-line"></div>
+        <div class="tl-item" id="tl-gather"><div class="tl-dot pend" id="tld-gather"></div><div><div class="tl-t">Background</div><div class="tl-s" id="tls-gather">Pending</div></div></div>
+        <div class="tl-line"></div>
+        <div class="tl-item" id="tl-tech"><div class="tl-dot pend" id="tld-tech"></div><div><div class="tl-t">Technical</div><div class="tl-s" id="tls-tech">Pending</div></div></div>
+        <div class="tl-line"></div>
+        <div class="tl-item" id="tl-end"><div class="tl-dot pend" id="tld-end"></div><div><div class="tl-t">Wrap Up</div><div class="tl-s" id="tls-end">Pending</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHAT ── -->
+  <div class="chat-col" id="chatCol">
+    <div class="chat-area" id="chatArea">
+      <!-- Pre-interview placeholder -->
+      <div id="chatPlaceholder" style="margin:auto;text-align:center;color:var(--t3)">
+        <div style="font-size:40px;margin-bottom:12px">🤖</div>
+        <div style="font-size:15px;font-weight:500;color:var(--t2);margin-bottom:6px">AI Interviewer</div>
+        <div style="font-size:13px;line-height:1.7">Register in the left panel to begin.<br/>Your session persists across refreshes.</div>
+      </div>
+      <div class="thinking" id="thinkingRow">
+        <div class="mavatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0">AI</div>
+        <div class="tdots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+      </div>
+    </div>
+
+    <div id="endedBanner" class="ended-banner" style="display:none">
+      Interview complete — thank you! Refresh to start a new session.
+    </div>
+    <div class="restore-notice" id="restoreNotice">
+      ✓ Session restored — welcome back! Your progress is intact.
+    </div>
+
+    <div class="chat-footer">
+      <div class="input-wrap">
+        <textarea id="chatInput" rows="1" placeholder="Type your response here…" disabled></textarea>
+        <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="panel right-panel">
+    <div class="sent-header">
+      <div class="ptitle" style="margin:0">Sentiment</div>
+      <div class="live-badge">LIVE NLP</div>
+    </div>
+
+    <div class="ring-wrap">
+      <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="48" cy="48" r="40" fill="none" stroke="#2a3150" stroke-width="7"/>
+        <circle id="ringArc" cx="48" cy="48" r="40" fill="none" stroke="#3dd68c" stroke-width="7"
+          stroke-dasharray="251" stroke-dashoffset="251" stroke-linecap="round"/>
+      </svg>
+      <div class="ring-inner">
+        <div class="ring-num" id="polarityNum" style="color:var(--t3)">—</div>
+        <div class="ring-label">polarity</div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="mc"><div class="mc-label">Overall</div><div class="mc-val" id="sentLabel" style="color:var(--t3)">—</div></div>
+      <div class="mc"><div class="mc-label">Subjectivity</div><div class="mc-val" id="subjVal" style="color:var(--accent)">—</div></div>
+      <div class="mc"><div class="mc-label">Responses</div><div class="mc-val" id="responseCount" style="color:var(--ok)">0</div></div>
+      <div class="mc"><div class="mc-label">Phase</div><div class="mc-val" id="phaseTag" style="color:var(--warn)">—</div></div>
+    </div>
+
+    <div class="ptitle">Interview Analysis</div>
+    <div class="bar-block">
+      <div class="brow">
+        <div class="bheader"><span class="blabel">Communication clarity</span><span class="bval" id="bv1">—</span></div>
+        <div class="btrack"><div class="bfill" id="bf1" style="width:0%;background:var(--accent)"></div></div>
+      </div>
+      <div class="brow">
+        <div class="bheader"><span class="blabel">Response confidence</span><span class="bval" id="bv2">—</span></div>
+        <div class="btrack"><div class="bfill" id="bf2" style="width:0%;background:var(--ok)"></div></div>
+      </div>
+      <div class="brow">
+        <div class="bheader"><span class="blabel">Positivity trend</span><span class="bval" id="bv3">—</span></div>
+        <div class="btrack"><div class="bfill" id="bf3" style="width:0%;background:var(--accent2)"></div></div>
+      </div>
+      <div class="brow">
+        <div class="bheader"><span class="blabel">Engagement level</span><span class="bval" id="bv4">—</span></div>
+        <div class="btrack"><div class="bfill" id="bf4" style="width:0%;background:var(--warn)"></div></div>
+      </div>
+    </div>
+
+    <div class="ptitle">Session Info</div>
+    <div style="font-size:11px;color:var(--t3);font-family:var(--mono);line-height:1.8" id="sessionMeta">
+      No active session
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+const SESSION_KEY = 'hireai_session_id';
+let sessionId = null;
+let responseCount = 0;
+let polarityHistory = [];
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  const saved = localStorage.getItem(SESSION_KEY);
+  if (saved) {
+    try {
+      const data = await apiFetch(`/api/session/${saved}`);
+      sessionId = saved;
+      restoreSession(data);
+    } catch {
+      localStorage.removeItem(SESSION_KEY); // session expired or server restart
+    }
+  }
+});
+
+// ─── Registration ─────────────────────────────────────────────────────────────
+async function startInterview() {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const role  = document.getElementById('regRole').value;
+  const lang  = document.getElementById('regLang').value;
+
+  if (!name || !email) {
+    document.getElementById('regErr').style.display = 'block';
+    return;
+  }
+  document.getElementById('regErr').style.display = 'none';
+
+  const btn = document.querySelector('.btn-start');
+  btn.textContent = 'Connecting…';
+  btn.disabled = true;
+
+  try {
+    const data = await apiFetch('/api/session/start', 'POST', {name, email, role, language: lang});
+
+    // ── Case 2: already completed ─────────────────────────────────────────
+    if (data.status === 'already_participated') {
+      showAlreadyParticipated(data.message);
+      btn.textContent = 'Begin Interview →';
+      btn.disabled = false;
+      return;
+    }
+
+    // ── Case 1 & 3: new or resumed ────────────────────────────────────────
+    sessionId = data.session_id;
+    localStorage.setItem(SESSION_KEY, sessionId);
+    const isResumed = data.status === 'resumed';
+    initInterviewUI(data, isResumed);
+
+  } catch (e) {
+    btn.textContent = 'Begin Interview →';
+    btn.disabled = false;
+    alert('Could not start session: ' + e.message);
+  }
+}
+
+function showAlreadyParticipated(message) {
+  // Hide the form fields, show a styled notice instead
+  document.getElementById('regErr').style.display = 'none';
+  const panel = document.getElementById('regPanel');
+  panel.innerHTML = `
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:16px">✅</div>
+      <h2 style="margin-bottom:12px;font-size:18px">Already Participated</h2>
+      <p style="font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:20px">${message}</p>
+      <div style="background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;font-size:13px;color:var(--t3)">
+        If you believe this is a mistake, please contact our HR team.
+      </div>
+    </div>`;
+}
+
+// ─── Restore ──────────────────────────────────────────────────────────────────
+function restoreSession(data) {
+  // called on tab reload via localStorage
+  responseCount = data.messages.filter(m => m.role === 'user').length;
+  initInterviewUI(data, true);
+  document.getElementById('restoreNotice').classList.add('show');
+  setTimeout(() => document.getElementById('restoreNotice').classList.remove('show'), 4000);
+}
+
+// ─── Init UI ──────────────────────────────────────────────────────────────────
+function initInterviewUI(data, isResumed=false) {
+  // Swap panels
+  document.getElementById('regPanel').style.display   = 'none';
+  document.getElementById('candPanel').style.display  = 'block';
+  document.getElementById('chatPlaceholder').style.display = 'none';
+
+  // Populate candidate info
+  const initials = data.candidate_name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('candInitials').textContent = initials;
+  document.getElementById('candName').textContent     = data.candidate_name;
+  document.getElementById('candRole').textContent     = data.role;
+  document.getElementById('langLabel').textContent    = data.language || 'English';
+
+  // Session meta
+  document.getElementById('sessionMeta').textContent =
+    `id: ${sessionId.slice(0,8)}…\nstarted: ${new Date().toLocaleTimeString()}`;
+
+  // Render history
+  const area = document.getElementById('chatArea');
+  data.messages.forEach(m => appendBubble(m.role, m.content, false));
+
+  // Enable input
+  if (data.stage !== 'ended') {
+    document.getElementById('chatInput').disabled  = false;
+    document.getElementById('sendBtn').disabled    = false;
+  } else {
+    showEndedBanner();
+  }
+
+  updateStage(data.stage, data.q_count || 0);
+  if (data.sentiment && data.sentiment.polarity !== 0) updateSentiment(data.sentiment);
+
+  if (isResumed) {
+    const notice = document.getElementById('restoreNotice');
+    const hasHistory = data.messages && data.messages.length > 1;
+    notice.textContent = hasHistory
+      ? '↩ Interview resumed — continuing from where you left off.'
+      : '✓ Session restored — your progress is intact.';
+    notice.classList.add('show');
+    setTimeout(() => notice.classList.remove('show'), 5000);
+  }
+
+  scrollChat();
+}
+
+// ─── Send message ─────────────────────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text  = input.value.trim();
+  if (!text || !sessionId) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  setInputState(false);
+  appendBubble('user', text);
+  showThinking(true);
+  responseCount++;
+  document.getElementById('responseCount').textContent = responseCount;
+
+  try {
+    const data = await apiFetch(`/api/session/${sessionId}/message`, 'POST', {message: text});
+    showThinking(false);
+    appendBubble('model', data.reply);
+    updateSentiment(data.sentiment);
+    updateStage(data.stage, data.q_count || 0);
+    if (data.tech_tags && data.tech_tags.length) updateTechTags(data.tech_tags);
+    if (data.stage === 'ended') showEndedBanner();
+    else setInputState(true);
+  } catch (e) {
+    showThinking(false);
+    appendBubble('model', '⚠️ ' + (e.message || 'Something went wrong. Please try again.'));
+    setInputState(true);
+  }
+  scrollChat();
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function parseMarkdown(text) {
+  let s = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  s = s.replace(/\*\*Question\s*(\d+):\*\*/gi, '<span class="question-label">Q$1</span><br>');
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  s = s.replace(/\n/g, '<br>');
+  return s;
+}
+
+function appendBubble(role, content, animate=true) {
+  const area = document.getElementById('chatArea');
+  const thinking = document.getElementById('thinkingRow');
+
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const isAI = role === 'model';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + (isAI ? 'ai' : 'user');
+
+  const av = document.createElement('div');
+  av.className = 'mavatar';
+  av.textContent = isAI ? 'AI' : '👤';
+  if (isAI) av.style.cssText = 'background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0';
+  else av.style.cssText = 'background:var(--s3);border:1px solid var(--bd);color:var(--t2);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0';
+
+  const inner = document.createElement('div');
+  const bubble = document.createElement('div');
+  bubble.className = 'mbubble';
+  bubble.innerHTML = parseMarkdown(content);
+
+  const time = document.createElement('div');
+  time.className = 'mtime';
+  time.textContent = now;
+
+  inner.appendChild(bubble);
+  inner.appendChild(time);
+  wrap.appendChild(av);
+  wrap.appendChild(inner);
+
+  area.insertBefore(wrap, thinking);
+  if (!animate) wrap.style.animation = 'none';
+}
+
+function showThinking(show) {
+  document.getElementById('thinkingRow').className = 'thinking' + (show ? ' show' : '');
+  scrollChat();
+}
+
+function setInputState(enabled) {
+  document.getElementById('chatInput').disabled = !enabled;
+  document.getElementById('sendBtn').disabled   = !enabled;
+  if (enabled) document.getElementById('chatInput').focus();
+}
+
+function showEndedBanner() {
+  document.getElementById('endedBanner').style.display = 'block';
+  setInputState(false);
+  localStorage.removeItem(SESSION_KEY);
+  document.getElementById('liveLabel').textContent = 'Ended';
+  document.getElementById('liveStatus').style.background = 'var(--danger)';
+  document.getElementById('liveStatus').classList.remove('pulse');
+}
+
+function scrollChat() {
+  const area = document.getElementById('chatArea');
+  setTimeout(() => area.scrollTop = area.scrollHeight, 50);
+}
+
+function updateTechTags(tags) {
+  if (!tags || tags.length === 0) return;
+  const container = document.getElementById('techTags');
+  container.innerHTML = tags.map(t =>
+    `<span class="tag hi">${t}</span>`
+  ).join('');
+}
+
+function updateStage(stage, qCount) {
+  const labels = {registration:'Registration', gathering:'Background', tech_questions:'Technical', ended:'Complete'};
+  document.getElementById('stageLabel').textContent  = labels[stage] || stage;
+  document.getElementById('phaseTag').textContent    = labels[stage] || stage;
+  document.getElementById('liveLabel').textContent   = 'Active';
+
+  // Phase indicators in header
+  const clear = (id) => { document.getElementById(id).className = 'ph'; document.getElementById(id).querySelector('.ph-dot').className='ph-dot'; };
+  const done  = (id, lnId) => { document.getElementById(id).className = 'ph done'; document.getElementById(id).querySelector('.ph-dot').className='ph-dot'; if(lnId) document.getElementById(lnId).className='ph-line done'; };
+  const active= (id) => { document.getElementById(id).className = 'ph active'; document.getElementById(id).querySelector('.ph-dot').className='ph-dot'; };
+
+  ['ph-reg','ph-gather','ph-tech','ph-end'].forEach(clear);
+
+  if (stage === 'gathering') {
+    done('ph-reg','pl-1'); active('ph-gather');
+  } else if (stage === 'tech_questions') {
+    done('ph-reg','pl-1'); done('ph-gather','pl-2'); active('ph-tech');
+  } else if (stage === 'ended') {
+    done('ph-reg','pl-1'); done('ph-gather','pl-2'); done('ph-tech','pl-3'); done('ph-end');
+  }
+
+  // Timeline
+  const setTL = (id, dotId, subId, dotState, subText) => {
+    document.getElementById(id).className = 'tl-item' + (dotState==='active' ? ' active-row' : '');
+    document.getElementById(dotId).className = 'tl-dot ' + dotState;
+    if(subId) document.getElementById(subId).textContent = subText;
+  };
+  setTL('tl-reg','tld-reg',null,'done','');
+  if (stage === 'gathering') {
+    setTL('tl-gather','tld-gather','tls-gather','active','In progress');
+  } else if (stage === 'tech_questions' || stage === 'ended') {
+    setTL('tl-gather','tld-gather','tls-gather','done','Completed');
+    if (stage === 'tech_questions') setTL('tl-tech','tld-tech','tls-tech','active','In progress');
+    else { setTL('tl-tech','tld-tech','tls-tech','done','Completed'); setTL('tl-end','tld-end','tls-end','done','Concluded'); }
+  }
+
+  // Progress bar (tech stage)
+  if (stage === 'tech_questions') {
+    const pct = Math.min(100, Math.round((qCount / 5) * 100));
+    document.getElementById('progFill').style.width = pct + '%';
+    document.getElementById('progNow').textContent  = qCount + ' / 5';
+    document.getElementById('progPct').textContent  = pct + '%';
+  }
+}
+
+function updateSentiment(s) {
+  if (!s) return;
+  polarityHistory.push(s.polarity);
+
+  const p   = s.polarity;
+  const pct = Math.min(100, Math.round(((p + 1) / 2) * 100));
+  const offset = 251 - (251 * pct / 100);
+  const arc  = document.getElementById('ringArc');
+  const colr = p > 0.2 ? 'var(--ok)' : p < -0.2 ? 'var(--danger)' : 'var(--warn)';
+  arc.setAttribute('stroke-dashoffset', offset.toFixed(1));
+  arc.setAttribute('stroke', colr.replace('var(','').replace(')',''));
+  // Use actual hex for SVG stroke
+  const hexMap = {'--ok':'#3dd68c','--warn':'#f5a623','--danger':'#f74f6a'};
+  arc.setAttribute('stroke', hexMap[colr.replace('var(','').replace(')','')]);
+
+  document.getElementById('polarityNum').textContent  = p.toFixed(2);
+  document.getElementById('polarityNum').style.color  = colr;
+  document.getElementById('sentLabel').textContent    = s.label;
+  document.getElementById('sentLabel').style.color    = colr;
+  document.getElementById('subjVal').textContent      = s.subjectivity.toFixed(2);
+
+  // Derived bars
+  const clarity    = Math.round(60 + (s.polarity * 30));
+  const confidence = Math.round(55 + ((1 - s.subjectivity) * 35));
+  const positivity = Math.round(((s.polarity + 1) / 2) * 100);
+  const avg        = polarityHistory.reduce((a,b)=>a+b,0)/polarityHistory.length;
+  const engagement = Math.round(50 + (avg * 40));
+
+  const setBar = (vId, fId, val) => {
+    const v = Math.max(0, Math.min(100, val));
+    document.getElementById(vId).textContent  = v + '%';
+    document.getElementById(fId).style.width  = v + '%';
+  };
+  setBar('bv1','bf1', clarity);
+  setBar('bv2','bf2', confidence);
+  setBar('bv3','bf3', positivity);
+  setBar('bv4','bf4', engagement);
+}
+
+// ─── API wrapper ──────────────────────────────────────────────────────────────
+async function apiFetch(url, method='GET', body=null) {
+  const opts = { method, headers: {'Content-Type':'application/json'} };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({detail:'Network error'}));
+    throw new Error(err.detail || res.statusText);
+  }
+  return res.json();
+}
+
+// ─── Keyboard submit ──────────────────────────────────────────────────────────
+document.getElementById('chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+document.getElementById('chatInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+</script>
+</body>
+</html>
