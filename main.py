@@ -293,7 +293,7 @@ async def send_message(session_id: str, req: MessageRequest):
 
         if "TRANSITION_TO_TECH" in reply:
             s["stage"] = "tech_questions"
-            s["tech_tags"] = extract_tech_tags(s["messages"])
+            # s["tech_tags"] = extract_tech_tags(s["messages"])
             reply = reply.replace("TRANSITION_TO_TECH", "").strip()
 
         if "END_INTERVIEW" in reply:
